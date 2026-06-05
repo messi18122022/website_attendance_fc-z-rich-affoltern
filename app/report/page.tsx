@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Player, Session, Attendance, SessionType } from '@/lib/types'
-import { buildReport, toCsv, downloadCsv, shareCsv } from '@/lib/export'
+import { buildReport, toCsv, downloadCsv } from '@/lib/export'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
@@ -28,11 +28,7 @@ export default function ReportPage() {
   const [sessions, setSessions] = useState<Session[]>([])
   const [attendance, setAttendance] = useState<Attendance[]>([])
   const [loading, setLoading] = useState(true)
-  const [sharing, setSharing] = useState(false)
-  const [canShare, setCanShare] = useState(false)
-
   useEffect(() => {
-    setCanShare(typeof navigator !== 'undefined' && 'share' in navigator)
     loadData()
   }, [])
 
@@ -56,17 +52,6 @@ export default function ReportPage() {
   })
 
   const report = buildReport(players, filteredSessions, attendance)
-
-  async function handleExport() {
-    const csv = toCsv(report, filteredSessions)
-    const filename = `anwesenheiten_${from}_${to}.csv`
-    setSharing(true)
-    try {
-      await shareCsv(csv, filename)
-    } finally {
-      setSharing(false)
-    }
-  }
 
   function handleDownload() {
     const csv = toCsv(report, filteredSessions)
@@ -180,23 +165,10 @@ export default function ReportPage() {
             </table>
           </div>
 
-          {/* Export-Buttons */}
-          <div className="flex gap-3">
-            {canShare ? (
-              <Button className="flex-1" onClick={handleExport} disabled={sharing}>
-                {sharing ? 'Teilt…' : '⬆ Teilen / Speichern'}
-              </Button>
-            ) : (
-              <Button className="flex-1" onClick={handleDownload}>
-                ⬇ CSV herunterladen
-              </Button>
-            )}
-            {canShare && (
-              <Button variant="outline" onClick={handleDownload}>
-                ⬇ Download
-              </Button>
-            )}
-          </div>
+          {/* Export-Button */}
+          <Button className="w-full font-bold rounded-xl h-12" onClick={handleDownload}>
+            ⬇ CSV herunterladen
+          </Button>
         </>
       )}
     </div>
