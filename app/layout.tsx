@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="border-b border-border/60 bg-card/80 backdrop-blur sticky top-0 z-10">
           <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
             <Link href="/" className="font-extrabold text-base tracking-tight text-foreground hover:text-primary transition-colors">
-              ⚽ FC Zürich Affoltern
+              FC Zürich Affoltern Fb
             </Link>
             <nav className="flex gap-1">
               <Link href="/" className="text-sm font-medium px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">

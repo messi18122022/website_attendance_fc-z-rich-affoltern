@@ -56,7 +56,7 @@ export default function ReportPage() {
 
   function handleDownload() {
     const csv = toCsv(report, filteredSessions)
-    downloadCsv(csv, `anwesenheiten_${from}_${to}.csv`)
+    downloadCsv(csv, `fc-zuerich-affoltern-fb_anwesenheiten_${from}_${to}.csv`)
   }
 
   return (
