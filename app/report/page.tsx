@@ -142,44 +142,40 @@ export default function ReportPage() {
             {filteredSessions.length} Session{filteredSessions.length !== 1 ? 's' : ''} gefunden
           </div>
 
-          {/* Vorschau-Tabelle */}
+          {/* Vorschau-Tabelle: Spieler = Zeilen, Sessions = Spalten */}
           <div className="overflow-x-auto rounded-xl border">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/40">
-                  <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Datum</th>
-                  <th className="text-left px-2 py-2 font-medium whitespace-nowrap">Typ</th>
-                  {report.map((row) => (
-                    <th key={row.vorname} className="px-2 py-2 font-medium text-center whitespace-nowrap">
-                      {row.vorname}
+                  <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Vorname</th>
+                  {filteredSessions.map((s) => (
+                    <th key={s.id} className="px-2 py-2 font-medium text-center whitespace-nowrap"
+                      title={`${s.date}${s.label ? ' – ' + s.label : ''}`}>
+                      <div className="flex flex-col items-center gap-0.5">
+                        <Badge variant={s.type === 'training' ? 'secondary' : 'default'} className="text-[10px] px-1 py-0">
+                          {s.type === 'training' ? 'T' : 'Tu'}
+                        </Badge>
+                        <span className="text-[10px] text-muted-foreground">{formatDate(s.date)}</span>
+                      </div>
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {filteredSessions.map((s) => {
-                  return (
-                    <tr key={s.id} className="border-b last:border-0 hover:bg-muted/20">
-                      <td className="px-3 py-2 whitespace-nowrap">
-                        {formatDate(s.date)}{s.label ? ` – ${s.label}` : ''}
+                {report.map((row) => (
+                  <tr key={row.vorname} className="border-b last:border-0 hover:bg-muted/20">
+                    <td className="px-3 py-2 font-medium whitespace-nowrap">{row.vorname}</td>
+                    {filteredSessions.map((s) => (
+                      <td key={s.id} className="px-2 py-2 text-center">
+                        {row.sessions[s.id] ? (
+                          <span className="text-green-600 font-bold">✓</span>
+                        ) : (
+                          <span className="text-muted-foreground/40">–</span>
+                        )}
                       </td>
-                      <td className="px-2 py-2">
-                        <Badge variant={s.type === 'training' ? 'secondary' : 'default'} className="text-[10px] px-1 py-0">
-                          {s.type === 'training' ? 'Training' : 'Turnier'}
-                        </Badge>
-                      </td>
-                      {report.map((row) => (
-                        <td key={row.vorname} className="px-2 py-2 text-center">
-                          {row.sessions[s.id] ? (
-                            <span className="text-green-600 font-bold">✓</span>
-                          ) : (
-                            <span className="text-muted-foreground/40">–</span>
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  )
-                })}
+                    ))}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
