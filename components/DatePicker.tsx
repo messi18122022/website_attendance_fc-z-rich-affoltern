@@ -36,13 +36,27 @@ function toIso(date: Date): string {
 
 export default function DatePicker({ value, onChange, className }: Props) {
   const [open, setOpen] = useState(false)
+  const [animating, setAnimating] = useState(false)
+
+  function handleOpenChange(next: boolean) {
+    if (!next) {
+      setAnimating(true)
+      setTimeout(() => {
+        setOpen(false)
+        setAnimating(false)
+      }, 150)
+    } else {
+      setOpen(true)
+    }
+  }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open || animating} onOpenChange={handleOpenChange}>
       <PopoverTrigger
         className={cn(
-          'w-full rounded-xl border border-input bg-card px-3.5 py-2.5 text-sm text-left font-medium transition-all',
-          'hover:border-border focus:outline-none focus:ring-2 focus:ring-primary/60',
+          'w-full rounded-xl border border-input bg-card px-3.5 py-2.5 text-sm text-left font-medium transition-all duration-150',
+          'hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/60',
+          open && 'border-primary/40 ring-2 ring-primary/20',
           !value && 'text-muted-foreground',
           className
         )}
@@ -57,19 +71,24 @@ export default function DatePicker({ value, onChange, className }: Props) {
           {formatDisplay(value)}
         </span>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 border-border bg-card" align="start">
-        <Calendar
-          mode="single"
-          selected={toDate(value)}
-          onSelect={(date) => {
-            if (date) {
-              onChange(toIso(date))
-              setOpen(false)
-            }
-          }}
-          locale={de}
-          weekStartsOn={1}
-        />
+      <PopoverContent
+        className="w-auto p-0 border-border/60 bg-card shadow-2xl shadow-black/40 overflow-hidden"
+        align="start"
+      >
+        <div className={animating ? 'animate-calendar-out' : 'animate-calendar-in'}>
+          <Calendar
+            mode="single"
+            selected={toDate(value)}
+            onSelect={(date) => {
+              if (date) {
+                onChange(toIso(date))
+                handleOpenChange(false)
+              }
+            }}
+            locale={de}
+            weekStartsOn={1}
+          />
+        </div>
       </PopoverContent>
     </Popover>
   )

@@ -85,6 +85,25 @@
   --sidebar-ring: oklch(0.72 0.19 148);
 }
 
+@keyframes calendar-in {
+  0%   { opacity: 0; transform: scale(0.90) translateY(-10px); }
+  60%  { opacity: 1; transform: scale(1.02) translateY(2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes calendar-out {
+  0%   { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(0.93) translateY(-8px); }
+}
+
+.animate-calendar-in {
+  animation: calendar-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-calendar-out {
+  animation: calendar-out 0.16s ease-in forwards;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
