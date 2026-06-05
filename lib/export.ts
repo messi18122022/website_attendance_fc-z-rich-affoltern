@@ -37,7 +37,7 @@ export function toCsv(rows: ReportRow[], sessions: Session[]): string {
 
   const lines = sessions.map((s) => {
     const label = s.label ? ` – ${s.label}` : ''
-    const playerCols = rows.map((row) => (row.sessions[s.id] ? '1' : '0'))
+    const playerCols = rows.map((row) => (row.sessions[s.id] ? 'x' : ''))
     return [`${s.date}${label}`, s.type, ...playerCols].join(',')
   })
 
