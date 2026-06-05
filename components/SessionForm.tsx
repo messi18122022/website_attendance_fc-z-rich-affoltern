@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Player, Session, SessionType } from '@/lib/types'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import AttendanceGrid from '@/components/AttendanceGrid'
 import { cn } from '@/lib/utils'
+
+const inputClass = 'w-full rounded-xl border border-input bg-card px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 transition-all'
 
 interface Props {
   players: Player[]
@@ -75,32 +76,32 @@ export default function SessionForm({ players, initialSession, initialAttendance
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Datum */}
       <div className="space-y-1.5">
-        <label className="text-sm font-medium">Datum</label>
+        <label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Datum</label>
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          className={inputClass}
         />
       </div>
 
       {/* Typ */}
       <div className="space-y-1.5">
-        <label className="text-sm font-medium">Typ</label>
-        <div className="flex gap-2">
+        <label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Typ</label>
+        <div className="grid grid-cols-2 gap-2">
           {(['training', 'turnier'] as SessionType[]).map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => setType(t)}
               className={cn(
-                'flex-1 py-2 rounded-lg border-2 text-sm font-medium transition-all',
+                'py-3 rounded-xl border-2 text-sm font-semibold transition-all',
                 type === t
-                  ? 'border-foreground bg-foreground text-background'
-                  : 'border-border text-muted-foreground hover:border-muted-foreground/40'
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-border text-muted-foreground hover:border-border/80 hover:text-foreground'
               )}
             >
               {t === 'training' ? '🏃 Training' : '🏆 Turnier'}
@@ -111,33 +112,33 @@ export default function SessionForm({ players, initialSession, initialAttendance
 
       {/* Label (optional) */}
       <div className="space-y-1.5">
-        <label className="text-sm font-medium">
-          Name <span className="text-muted-foreground font-normal">(optional)</span>
+        <label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          Name <span className="normal-case font-normal">(optional)</span>
         </label>
         <input
           type="text"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           placeholder="z.B. Pfingstturnier"
-          className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          className={inputClass}
         />
       </div>
 
       {/* Anwesenheiten */}
-      <div className="space-y-2">
-        <div className="flex gap-2">
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={setAllPresent}
-            className="text-xs text-green-700 underline underline-offset-2"
+            className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
           >
             Alle da
           </button>
-          <span className="text-xs text-muted-foreground">·</span>
+          <span className="text-muted-foreground/40">·</span>
           <button
             type="button"
             onClick={setAllAbsent}
-            className="text-xs text-muted-foreground underline underline-offset-2"
+            className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Alle weg
           </button>
@@ -150,11 +151,7 @@ export default function SessionForm({ players, initialSession, initialAttendance
       </div>
 
       {/* Speichern */}
-      <Button
-        className="w-full"
-        onClick={handleSave}
-        disabled={saving}
-      >
+      <Button className="w-full h-12 text-sm font-bold rounded-xl" onClick={handleSave} disabled={saving}>
         {saving ? 'Speichert…' : initialSession ? 'Änderungen speichern' : 'Session speichern'}
       </Button>
     </div>

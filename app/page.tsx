@@ -56,10 +56,10 @@ export default function DashboardPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold">Anwesenheiten</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight">Anwesenheiten</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Saison 25/26</p>
         </div>
-        <Link href="/session/new" className={cn(buttonVariants())}>
+        <Link href="/session/new" className={cn(buttonVariants(), 'font-bold rounded-xl')}>
           + Neue Session
         </Link>
       </div>

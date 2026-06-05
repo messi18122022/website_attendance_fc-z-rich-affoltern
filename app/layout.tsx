@@ -1,10 +1,13 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 import Link from 'next/link'
 import './globals.css'
 
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
-const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
+const jakarta = Plus_Jakarta_Sans({
+  variable: '--font-jakarta',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+})
 
 export const metadata: Metadata = {
   title: 'FC Zürich Affoltern – Anwesenheiten',
@@ -13,18 +16,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full bg-background">
-        <header className="border-b bg-white sticky top-0 z-10">
+    <html lang="de" className={`${jakarta.variable} h-full`}>
+      <body className="min-h-full bg-background antialiased">
+        <header className="border-b border-border/60 bg-card/80 backdrop-blur sticky top-0 z-10">
           <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-            <Link href="/" className="font-bold text-base text-foreground hover:opacity-80 transition-opacity">
+            <Link href="/" className="font-extrabold text-base tracking-tight text-foreground hover:text-primary transition-colors">
               ⚽ FC Zürich Affoltern
             </Link>
-            <nav className="flex gap-4">
-              <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <nav className="flex gap-1">
+              <Link href="/" className="text-sm font-medium px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
                 Übersicht
               </Link>
-              <Link href="/report" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/report" className="text-sm font-medium px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
                 Report
               </Link>
             </nav>

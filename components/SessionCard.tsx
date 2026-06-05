@@ -35,22 +35,28 @@ export default function SessionCard({ session, onDelete }: Props) {
   }
 
   return (
-    <Card className="hover:shadow-sm transition-shadow">
-      <CardContent className="py-3 px-4 flex items-center justify-between gap-3">
+    <Card className="border-border/60 hover:border-border transition-all hover:shadow-lg hover:shadow-black/20">
+      <CardContent className="py-3.5 px-4 flex items-center justify-between gap-3">
         <Link href={`/session/${session.id}`} className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <Badge variant={session.type === 'training' ? 'secondary' : 'default'}>
+            <Badge
+              variant={session.type === 'training' ? 'secondary' : 'default'}
+              className={cn(
+                'text-xs font-semibold',
+                session.type === 'turnier' && 'bg-primary/20 text-primary border-primary/30'
+              )}
+            >
               {session.type === 'training' ? 'Training' : 'Turnier'}
             </Badge>
             {session.label && (
-              <span className="text-sm font-medium truncate">{session.label}</span>
+              <span className="text-sm font-semibold truncate">{session.label}</span>
             )}
           </div>
-          <div className="mt-1 flex items-center gap-3">
+          <div className="mt-1.5 flex items-center gap-3">
             <span className="text-sm text-muted-foreground">{formatDate(session.date)}</span>
-            <span className="text-sm font-semibold">
+            <span className="text-sm font-bold text-foreground">
               {session.present_count}/{session.total_count}
-              <span className="text-muted-foreground font-normal ml-1">({pct}%)</span>
+              <span className="text-muted-foreground font-normal ml-1 text-xs">({pct}%)</span>
             </span>
           </div>
         </Link>
@@ -58,14 +64,14 @@ export default function SessionCard({ session, onDelete }: Props) {
         <div className="flex items-center gap-1 shrink-0">
           <Link
             href={`/session/${session.id}`}
-            className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
+            className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'text-xs')}
           >
             Bearbeiten
           </Link>
           <Button
             variant="ghost"
             size="sm"
-            className="text-destructive hover:text-destructive"
+            className="text-muted-foreground hover:text-destructive text-xs"
             onClick={handleDelete}
           >
             ✕
