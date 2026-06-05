@@ -6,6 +6,7 @@ import { Player, Session, Attendance, SessionType } from '@/lib/types'
 import { buildReport, toCsv, downloadCsv } from '@/lib/export'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import DatePicker from '@/components/DatePicker'
 import { cn } from '@/lib/utils'
 
 type FilterType = 'all' | SessionType
@@ -70,21 +71,11 @@ export default function ReportPage() {
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Von</label>
-            <input
-              type="date"
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-            />
+            <DatePicker value={from} onChange={setFrom} />
           </div>
           <div className="space-y-1">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Bis</label>
-            <input
-              type="date"
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-            />
+            <DatePicker value={to} onChange={setTo} />
           </div>
         </div>
 

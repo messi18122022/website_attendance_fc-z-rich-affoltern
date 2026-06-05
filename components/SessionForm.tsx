@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 import { Player, Session, SessionType } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import AttendanceGrid from '@/components/AttendanceGrid'
+import DatePicker from '@/components/DatePicker'
 import { cn } from '@/lib/utils'
 
 const inputClass = 'w-full rounded-xl border border-input bg-card px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/60 transition-all'
@@ -80,12 +81,7 @@ export default function SessionForm({ players, initialSession, initialAttendance
       {/* Datum */}
       <div className="space-y-1.5">
         <label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Datum</label>
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className={inputClass}
-        />
+        <DatePicker value={date} onChange={setDate} />
       </div>
 
       {/* Typ */}
