@@ -160,8 +160,7 @@ export default function ReportPage() {
           <div className="flex justify-end">
             <Button
               onClick={handleDownload}
-              variant="outline"
-              className="rounded-xl h-11 w-11 p-0 border-border/60 hover:border-primary hover:text-primary transition-colors"
+              className="rounded-xl h-11 w-11 p-0 bg-primary hover:bg-primary/80 text-primary-foreground"
               title="CSV herunterladen"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

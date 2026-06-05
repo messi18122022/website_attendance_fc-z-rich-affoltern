@@ -1,11 +1,22 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { SessionWithCount } from '@/lib/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from '@/components/ui/alert-dialog'
 import { cn } from '@/lib/utils'
 
 function formatDate(dateStr: string) {
@@ -23,16 +34,12 @@ interface Props {
 }
 
 export default function SessionCard({ session, onDelete }: Props) {
+  const [open, setOpen] = useState(false)
+
   const pct =
     session.total_count > 0
       ? Math.round((session.present_count / session.total_count) * 100)
       : 0
-
-  function handleDelete() {
-    if (confirm(`Session vom ${formatDate(session.date)} wirklich löschen?`)) {
-      onDelete()
-    }
-  }
 
   return (
     <Card className="border-border/60 hover:border-border transition-all hover:shadow-lg hover:shadow-black/20">
@@ -61,21 +68,47 @@ export default function SessionCard({ session, onDelete }: Props) {
           </div>
         </Link>
 
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <Link
             href={`/session/${session.id}`}
             className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'text-xs')}
           >
             Bearbeiten
           </Link>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground hover:text-destructive text-xs"
-            onClick={handleDelete}
-          >
-            ✕
-          </Button>
+
+          <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogTrigger
+              className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+              title="Session löschen"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/>
+                <path d="M14 11v6"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+              </svg>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Session löschen?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {formatDate(session.date)}{session.label ? ` – ${session.label}` : ''} wird unwiderruflich gelöscht.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setOpen(false)}>
+                  Abbrechen
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  onClick={() => { setOpen(false); onDelete() }}
+                >
+                  Löschen
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </CardContent>
     </Card>
