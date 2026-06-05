@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { de } from 'date-fns/locale'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
 import { cn } from '@/lib/utils'
@@ -66,6 +67,8 @@ export default function DatePicker({ value, onChange, className }: Props) {
               setOpen(false)
             }
           }}
+          locale={de}
+          weekStartsOn={1}
         />
       </PopoverContent>
     </Popover>
