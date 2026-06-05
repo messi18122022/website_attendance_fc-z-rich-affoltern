@@ -32,14 +32,14 @@ export function buildReport(
 }
 
 export function toCsv(rows: ReportRow[], sessions: Session[]): string {
-  const sessionHeaders = sessions.map(
-    (s) => `${s.date} (${s.type}${s.label ? ` – ${s.label}` : ''})`
-  )
-  const header = ['Vorname', ...sessionHeaders, 'Total', 'Quote %'].join(',')
+  const playerNames = rows.map((r) => r.vorname)
+  const header = ['Datum', 'Typ', ...playerNames, 'Anwesend', 'Total'].join(',')
 
-  const lines = rows.map((row) => {
-    const sessionCols = sessions.map((s) => (row.sessions[s.id] ? '1' : '0'))
-    return [row.vorname, ...sessionCols, row.total, `${row.quote}%`].join(',')
+  const lines = sessions.map((s) => {
+    const label = s.label ? ` – ${s.label}` : ''
+    const playerCols = rows.map((row) => (row.sessions[s.id] ? '1' : '0'))
+    const presentCount = rows.filter((row) => row.sessions[s.id]).length
+    return [`${s.date}${label}`, s.type, ...playerCols, presentCount, rows.length].join(',')
   })
 
   return [header, ...lines].join('\n')
