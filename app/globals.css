@@ -97,11 +97,11 @@
 }
 
 .animate-calendar-in {
-  animation: calendar-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: calendar-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-calendar-out {
-  animation: calendar-out 0.16s ease-in forwards;
+  animation: calendar-out 0.25s ease-in forwards;
 }
 
 @layer base {

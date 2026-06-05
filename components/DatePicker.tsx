@@ -44,7 +44,7 @@ export default function DatePicker({ value, onChange, className }: Props) {
       setTimeout(() => {
         setOpen(false)
         setAnimating(false)
-      }, 150)
+      }, 240)
     } else {
       setOpen(true)
     }
