@@ -154,12 +154,10 @@ export default function ReportPage() {
                       {row.vorname}
                     </th>
                   ))}
-                  <th className="px-3 py-2 font-medium text-right whitespace-nowrap">Anwesend</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredSessions.map((s) => {
-                  const presentCount = report.filter((row) => row.sessions[s.id]).length
                   return (
                     <tr key={s.id} className="border-b last:border-0 hover:bg-muted/20">
                       <td className="px-3 py-2 whitespace-nowrap">
@@ -179,9 +177,6 @@ export default function ReportPage() {
                           )}
                         </td>
                       ))}
-                      <td className="px-3 py-2 text-right font-semibold">
-                        {presentCount}/{report.length}
-                      </td>
                     </tr>
                   )
                 })}
