@@ -21,7 +21,7 @@ export default function AttendanceGrid({ players, attendance, onChange }: Props)
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <div className="flex flex-col gap-2">
         {players.map((player) => {
           const present = attendance[player.id] ?? false
           return (
