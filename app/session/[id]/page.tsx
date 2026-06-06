@@ -9,6 +9,37 @@ import { buttonVariants } from '@/components/ui/button'
 import SessionForm from '@/components/SessionForm'
 import { cn } from '@/lib/utils'
 
+function SessionFormSkeleton() {
+  return (
+    <div className="space-y-5 animate-pulse">
+      <div className="space-y-1.5">
+        <div className="h-3 w-12 rounded bg-muted" />
+        <div className="h-11 w-full rounded-xl bg-muted" />
+      </div>
+      <div className="space-y-1.5">
+        <div className="h-3 w-8 rounded bg-muted" />
+        <div className="grid grid-cols-2 gap-2">
+          <div className="h-12 rounded-xl bg-muted" />
+          <div className="h-12 rounded-xl bg-muted" />
+        </div>
+      </div>
+      <div className="space-y-1.5">
+        <div className="h-3 w-20 rounded bg-muted" />
+        <div className="h-11 w-full rounded-xl bg-muted" />
+      </div>
+      <div className="space-y-3">
+        <div className="h-3 w-16 rounded bg-muted" />
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {Array.from({ length: 15 }).map((_, i) => (
+            <div key={i} className="h-16 rounded-xl bg-muted" />
+          ))}
+        </div>
+      </div>
+      <div className="h-12 w-full rounded-xl bg-muted" />
+    </div>
+  )
+}
+
 export default function EditSessionPage() {
   const { id } = useParams<{ id: string }>()
   const [players, setPlayers] = useState<Player[]>([])
@@ -17,27 +48,35 @@ export default function EditSessionPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function load() {
-      const [{ data: sessionData }, { data: playerData }, { data: attendanceData }] =
-        await Promise.all([
-          supabase.from('sessions').select('*').eq('id', id).single(),
-          supabase.from('players').select('*').eq('active', true).order('vorname'),
-          supabase.from('attendance').select('*').eq('session_id', id),
-        ])
-
-      setSession(sessionData)
-      setPlayers(playerData ?? [])
-
-      const map: Record<string, boolean> = {}
-      for (const p of playerData ?? []) {
-        const record = (attendanceData ?? []).find((a) => a.player_id === p.id)
-        map[p.id] = record?.present ?? false
-      }
-      setAttendance(map)
-      setLoading(false)
-    }
     load()
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') load()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
   }, [id])
+
+  async function load() {
+    setLoading(true)
+    const [{ data: sessionData }, { data: playerData }, { data: attendanceData }] =
+      await Promise.all([
+        supabase.from('sessions').select('*').eq('id', id).single(),
+        supabase.from('players').select('*').eq('active', true).order('vorname'),
+        supabase.from('attendance').select('*').eq('session_id', id),
+      ])
+
+    setSession(sessionData)
+    setPlayers(playerData ?? [])
+
+    const map: Record<string, boolean> = {}
+    for (const p of playerData ?? []) {
+      const record = (attendanceData ?? []).find((a) => a.player_id === p.id)
+      map[p.id] = record?.present ?? false
+    }
+    setAttendance(map)
+    setLoading(false)
+  }
 
   return (
     <div className="space-y-5">
@@ -49,7 +88,7 @@ export default function EditSessionPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-muted-foreground text-sm">Lädt…</div>
+        <SessionFormSkeleton />
       ) : session ? (
         <SessionForm
           players={players}

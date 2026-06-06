@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'FC Zürich Affoltern Fb – Anwesenheiten',
-    short_name: 'FCZA Anwesenheiten',
+    name: 'FCA Anwesenheiten',
+    short_name: 'FCA Anwesenheiten',
     description: 'Trainings- und Turnier-Anwesenheiten tracken',
     start_url: '/',
     display: 'standalone',

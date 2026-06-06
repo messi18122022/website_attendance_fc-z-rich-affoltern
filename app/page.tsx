@@ -8,12 +8,41 @@ import { buttonVariants } from '@/components/ui/button'
 import SessionCard from '@/components/SessionCard'
 import { cn } from '@/lib/utils'
 
+function SessionCardSkeleton() {
+  return (
+    <div className="rounded-xl border border-border/60 px-4 py-3.5 animate-pulse">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex-1 space-y-2">
+          <div className="flex items-center gap-2">
+            <div className="h-5 w-16 rounded-full bg-muted" />
+            <div className="h-4 w-28 rounded bg-muted" />
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="h-4 w-24 rounded bg-muted" />
+            <div className="h-4 w-12 rounded bg-muted" />
+          </div>
+        </div>
+        <div className="flex gap-2 shrink-0">
+          <div className="h-8 w-16 rounded-lg bg-muted" />
+          <div className="h-8 w-8 rounded-lg bg-muted" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function DashboardPage() {
   const [sessions, setSessions] = useState<SessionWithCount[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     loadSessions()
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') loadSessions()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
   }, [])
 
   async function loadSessions() {
@@ -68,7 +97,9 @@ export default function DashboardPage() {
       </div>
 
       {loading && (
-        <div className="text-center py-12 text-muted-foreground text-sm">Lädt…</div>
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => <SessionCardSkeleton key={i} />)}
+        </div>
       )}
 
       {!loading && sessions.length === 0 && (
