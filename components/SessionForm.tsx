@@ -15,9 +15,10 @@ interface Props {
   players: Player[]
   initialSession?: Session
   initialAttendance?: Record<string, boolean>
+  onDelete?: () => void
 }
 
-export default function SessionForm({ players, initialSession, initialAttendance }: Props) {
+export default function SessionForm({ players, initialSession, initialAttendance, onDelete }: Props) {
   const router = useRouter()
   const today = new Date().toISOString().slice(0, 10)
 
@@ -147,9 +148,35 @@ export default function SessionForm({ players, initialSession, initialAttendance
       </div>
 
       {/* Speichern */}
-      <Button className="w-full h-12 text-sm font-bold rounded-xl" onClick={handleSave} disabled={saving}>
-        {saving ? 'Speichert…' : initialSession ? 'Änderungen speichern' : 'Session speichern'}
-      </Button>
+      <div className="flex justify-end">
+        <Button
+          className="h-12 w-12 rounded-xl p-0"
+          onClick={handleSave}
+          disabled={saving}
+          title={initialSession ? 'Änderungen speichern' : 'Session speichern'}
+        >
+          {saving ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="animate-spin opacity-60">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          )}
+        </Button>
+      </div>
+
+      {/* Löschen */}
+      {onDelete && (
+        <button
+          type="button"
+          onClick={onDelete}
+          className="w-full h-11 rounded-xl border border-destructive/50 text-destructive text-sm font-medium hover:bg-destructive hover:text-destructive-foreground transition-colors mt-2"
+        >
+          Session löschen
+        </button>
+      )}
     </div>
   )
 }

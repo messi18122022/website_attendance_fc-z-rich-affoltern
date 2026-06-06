@@ -9,7 +9,6 @@ import { buttonVariants } from '@/components/ui/button'
 import SessionForm from '@/components/SessionForm'
 import {
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -67,6 +66,7 @@ export default function EditSessionPage() {
   const [session, setSession] = useState<Session | null>(null)
   const [attendance, setAttendance] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(true)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
@@ -109,28 +109,25 @@ export default function EditSessionPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link href="/" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), '-ml-2')}>
-            ← Zurück
-          </Link>
-          <h1 className="text-xl font-bold">Session bearbeiten</h1>
-        </div>
+      <div className="flex items-center gap-3">
+        <Link href="/" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), '-ml-2')}>
+          ← Zurück
+        </Link>
+        <h1 className="text-xl font-bold">Session bearbeiten</h1>
+      </div>
 
-        {session && (
-          <AlertDialog>
-            <AlertDialogTrigger
-              className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-              title="Session löschen"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                <path d="M10 11v6"/>
-                <path d="M14 11v6"/>
-                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-              </svg>
-            </AlertDialogTrigger>
+      {loading ? (
+        <SessionFormSkeleton />
+      ) : session ? (
+        <>
+          <SessionForm
+            players={players}
+            initialSession={session}
+            initialAttendance={attendance}
+            onDelete={() => setConfirmDelete(true)}
+          />
+
+          <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Session löschen?</AlertDialogTitle>
@@ -150,17 +147,7 @@ export default function EditSessionPage() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        )}
-      </div>
-
-      {loading ? (
-        <SessionFormSkeleton />
-      ) : session ? (
-        <SessionForm
-          players={players}
-          initialSession={session}
-          initialAttendance={attendance}
-        />
+        </>
       ) : (
         <p className="text-muted-foreground text-sm">Session nicht gefunden.</p>
       )}
