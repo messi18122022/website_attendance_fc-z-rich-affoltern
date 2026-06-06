@@ -76,10 +76,6 @@ export default function DashboardPage() {
     setLoading(false)
   }
 
-  async function deleteSession(id: string) {
-    await supabase.from('sessions').delete().eq('id', id)
-    setSessions((prev) => prev.filter((s) => s.id !== id))
-  }
 
   return (
     <div className="space-y-5">
@@ -117,7 +113,6 @@ export default function DashboardPage() {
             <SessionCard
               key={session.id}
               session={session}
-              onDelete={() => deleteSession(session.id)}
             />
           ))}
         </div>
