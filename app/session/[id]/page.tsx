@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { Player, Session } from '@/lib/types'
-import { buttonVariants } from '@/components/ui/button'
 import SessionForm from '@/components/SessionForm'
 import {
   AlertDialog,
@@ -17,8 +16,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog'
-import { cn } from '@/lib/utils'
-
 function formatDate(dateStr: string) {
   return new Date(dateStr + 'T12:00:00').toLocaleDateString('de-CH', {
     weekday: 'short',
@@ -110,8 +107,10 @@ export default function EditSessionPage() {
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-3">
-        <Link href="/" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), '-ml-2')}>
-          ← Zurück
+        <Link href="/" className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center hover:bg-muted/60 transition-colors -ml-1" title="Zurück">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
         </Link>
         <h1 className="text-xl font-bold">Session bearbeiten</h1>
       </div>
