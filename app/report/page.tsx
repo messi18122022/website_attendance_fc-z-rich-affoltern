@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Player, Session, Attendance, SessionType } from '@/lib/types'
-import { buildReport, toCsv, downloadCsv } from '@/lib/export'
+import { buildReport, toCsv, downloadCsv, CellStatus } from '@/lib/export'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import DatePicker from '@/components/DatePicker'
@@ -18,6 +18,13 @@ function formatDate(dateStr: string) {
   })
 }
 
+function Cell({ status }: { status: CellStatus }) {
+  if (status === 'x') return <span className="text-green-600 font-bold">✓</span>
+  if (status === 'v.E.' || status === 'n.A.')
+    return <span className="text-muted-foreground/50 text-[10px] italic">{status}</span>
+  return <span className="text-muted-foreground/40">–</span>
+}
+
 export default function ReportPage() {
   const today = new Date().toISOString().slice(0, 10)
   const firstOfYear = new Date().getFullYear() + '-01-01'
@@ -29,6 +36,7 @@ export default function ReportPage() {
   const [sessions, setSessions] = useState<Session[]>([])
   const [attendance, setAttendance] = useState<Attendance[]>([])
   const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     loadData()
   }, [])
@@ -36,7 +44,7 @@ export default function ReportPage() {
   async function loadData() {
     setLoading(true)
     const [{ data: p }, { data: s }, { data: a }] = await Promise.all([
-      supabase.from('players').select('*').eq('active', true).order('vorname'),
+      supabase.from('players').select('*').order('vorname'),
       supabase.from('sessions').select('*').order('date'),
       supabase.from('attendance').select('*'),
     ])
@@ -52,7 +60,18 @@ export default function ReportPage() {
     return true
   })
 
-  const report = buildReport(players, filteredSessions, attendance)
+  // Only include players who were active during any part of the selected period
+  const reportPlayers = players.filter(
+    (p) => p.joined_at <= to && (p.left_at === null || p.left_at >= from)
+  )
+
+  const report = buildReport(reportPlayers, filteredSessions, attendance)
+
+  const hasAnnotations = report.some(
+    (r) =>
+      Object.values(r.sessions).includes('v.E.') ||
+      Object.values(r.sessions).includes('n.A.')
+  )
 
   function handleDownload() {
     const csv = toCsv(report, filteredSessions)
@@ -113,22 +132,27 @@ export default function ReportPage() {
 
       {!loading && filteredSessions.length > 0 && (
         <>
-          {/* Zusammenfassung */}
           <div className="text-sm text-muted-foreground">
-            {filteredSessions.length} Session{filteredSessions.length !== 1 ? 's' : ''} gefunden
+            {filteredSessions.length} Session{filteredSessions.length !== 1 ? 's' : ''} · {reportPlayers.length} Spieler
           </div>
 
-          {/* Vorschau-Tabelle: Spieler = Zeilen, Sessions = Spalten */}
+          {/* Vorschau-Tabelle */}
           <div className="overflow-x-auto rounded-xl border">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/40">
                   <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Vorname</th>
                   {filteredSessions.map((s) => (
-                    <th key={s.id} className="px-2 py-2 font-medium text-center whitespace-nowrap"
-                      title={`${s.date}${s.label ? ' – ' + s.label : ''}`}>
+                    <th
+                      key={s.id}
+                      className="px-2 py-2 font-medium text-center whitespace-nowrap"
+                      title={`${s.date}${s.label ? ' – ' + s.label : ''}`}
+                    >
                       <div className="flex flex-col items-center gap-0.5">
-                        <Badge variant={s.type === 'training' ? 'secondary' : 'default'} className="text-[10px] px-1 py-0">
+                        <Badge
+                          variant={s.type === 'training' ? 'secondary' : 'default'}
+                          className="text-[10px] px-1 py-0"
+                        >
                           {s.type === 'training' ? 'T' : 'Tu'}
                         </Badge>
                         <span className="text-[10px] text-muted-foreground">{formatDate(s.date)}</span>
@@ -143,11 +167,7 @@ export default function ReportPage() {
                     <td className="px-3 py-2 font-medium whitespace-nowrap">{row.vorname}</td>
                     {filteredSessions.map((s) => (
                       <td key={s.id} className="px-2 py-2 text-center">
-                        {row.sessions[s.id] ? (
-                          <span className="text-green-600 font-bold">✓</span>
-                        ) : (
-                          <span className="text-muted-foreground/40">–</span>
-                        )}
+                        <Cell status={row.sessions[s.id] ?? ''} />
                       </td>
                     ))}
                   </tr>
@@ -155,6 +175,14 @@ export default function ReportPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Legende */}
+          {hasAnnotations && (
+            <div className="text-xs text-muted-foreground/70 space-y-0.5">
+              <p><span className="italic">v.E.</span> = vor Eintritt (war noch nicht im Team)</p>
+              <p><span className="italic">n.A.</span> = nach Austritt (war nicht mehr im Team)</p>
+            </div>
+          )}
 
           {/* Export-Button */}
           <div className="flex justify-end">
