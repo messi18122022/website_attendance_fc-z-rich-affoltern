@@ -5,7 +5,6 @@ import { supabase } from '@/lib/supabase'
 import { Player, Session, Attendance, SessionType } from '@/lib/types'
 import { buildReport, toCsv, downloadCsv, CellStatus } from '@/lib/export'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import DatePicker from '@/components/DatePicker'
 import { cn } from '@/lib/utils'
 
@@ -119,7 +118,7 @@ export default function ReportPage() {
                     : 'border-border text-muted-foreground'
                 )}
               >
-                {t === 'all' ? 'Alle' : t === 'training' ? 'Training' : 'Turnier'}
+                {t === 'all' ? 'Alle' : t === 'training' ? '🏃 Training' : '🏆 Turnier'}
               </button>
             ))}
           </div>
@@ -155,12 +154,7 @@ export default function ReportPage() {
                       title={`${s.date}${s.label ? ' – ' + s.label : ''}`}
                     >
                       <div className="flex flex-col items-center gap-0.5">
-                        <Badge
-                          variant={s.type === 'training' ? 'secondary' : 'default'}
-                          className="text-[10px] px-1 py-0"
-                        >
-                          {s.type === 'training' ? 'T' : 'Tu'}
-                        </Badge>
+                        <span className="text-base leading-none">{s.type === 'training' ? '🏃' : '🏆'}</span>
                         <span className="text-[10px] text-muted-foreground">{formatDate(s.date)}</span>
                       </div>
                     </th>

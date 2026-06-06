@@ -86,7 +86,6 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Anwesenheiten</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Saison 25/26</p>
         </div>
         <Link href="/session/new" className={cn(buttonVariants(), 'rounded-xl h-10 w-10 p-0')} title="Neue Session">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
