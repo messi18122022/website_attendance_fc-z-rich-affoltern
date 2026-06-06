@@ -107,20 +107,6 @@ export default function SessionForm({ players, initialSession, initialAttendance
         </div>
       </div>
 
-      {/* Label (optional) */}
-      <div className="space-y-1.5">
-        <label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Name <span className="normal-case font-normal">(optional)</span>
-        </label>
-        <input
-          type="text"
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
-          placeholder="z.B. Pfingstturnier"
-          className={inputClass}
-        />
-      </div>
-
       {/* Anwesenheiten */}
       <div className="space-y-3">
         <div className="flex items-center gap-3">
