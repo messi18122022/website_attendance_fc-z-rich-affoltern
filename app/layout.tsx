@@ -46,6 +46,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/report" className="text-sm font-medium px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
                 Report
               </Link>
+              <Link href="/team" className="text-sm font-medium px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+                Mannschaft
+              </Link>
             </nav>
           </div>
         </header>

@@ -5,6 +5,8 @@ CREATE TABLE players (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   vorname TEXT NOT NULL,
   active BOOLEAN DEFAULT TRUE,
+  joined_at DATE NOT NULL DEFAULT '2026-06-01',
+  left_at DATE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -56,8 +58,17 @@ CREATE POLICY "public read sessions" ON sessions FOR SELECT USING (true);
 CREATE POLICY "public insert sessions" ON sessions FOR INSERT WITH CHECK (true);
 CREATE POLICY "public update sessions" ON sessions FOR UPDATE USING (true);
 CREATE POLICY "public delete sessions" ON sessions FOR DELETE USING (true);
+CREATE POLICY "public delete players" ON players FOR DELETE USING (true);
 
 CREATE POLICY "public read attendance" ON attendance FOR SELECT USING (true);
 CREATE POLICY "public insert attendance" ON attendance FOR INSERT WITH CHECK (true);
 CREATE POLICY "public update attendance" ON attendance FOR UPDATE USING (true);
 CREATE POLICY "public delete attendance" ON attendance FOR DELETE USING (true);
+
+-- =============================================================
+-- MIGRATION (einmalig auf bestehender DB ausführen)
+-- =============================================================
+-- ALTER TABLE players ADD COLUMN joined_at DATE NOT NULL DEFAULT '2026-06-01';
+-- ALTER TABLE players ADD COLUMN left_at DATE;
+-- UPDATE players SET joined_at = '2026-06-01';
+-- CREATE POLICY "public delete players" ON players FOR DELETE USING (true);
