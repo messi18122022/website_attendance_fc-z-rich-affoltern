@@ -39,6 +39,12 @@ export default function ReportPage() {
 
   useEffect(() => {
     loadData()
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') loadData()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
   }, [])
 
   async function loadData() {

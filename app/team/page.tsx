@@ -36,6 +36,12 @@ export default function TeamPage() {
 
   useEffect(() => {
     loadPlayers()
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') loadPlayers()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
   }, [])
 
   async function loadPlayers() {
