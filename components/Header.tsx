@@ -17,8 +17,6 @@ export default function Header() {
   const pathname = usePathname()
   const menuRef = useRef<HTMLDivElement>(null)
 
-  if (pathname === '/pin') return null
-
   useEffect(() => {
     setOpen(false)
   }, [pathname])
