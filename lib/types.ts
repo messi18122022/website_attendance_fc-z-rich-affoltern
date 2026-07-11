@@ -4,6 +4,7 @@ export interface Player {
   id: string
   vorname: string
   active: boolean
+  birthdate: string | null
   joined_at: string
   left_at: string | null
   created_at: string

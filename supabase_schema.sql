@@ -5,6 +5,7 @@ CREATE TABLE players (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   vorname TEXT NOT NULL,
   active BOOLEAN DEFAULT TRUE,
+  birthdate DATE,
   joined_at DATE NOT NULL DEFAULT '2026-06-01',
   left_at DATE,
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -72,3 +73,7 @@ CREATE POLICY "public delete attendance" ON attendance FOR DELETE USING (true);
 -- ALTER TABLE players ADD COLUMN left_at DATE;
 -- UPDATE players SET joined_at = '2026-06-01';
 -- CREATE POLICY "public delete players" ON players FOR DELETE USING (true);
+
+-- birthdate DATE: Spalte existiert in Produktion bereits (hinzugefügt über
+-- website_turniere/supabase_schema.sql, geteilte DB). Kein erneutes ALTER nötig,
+-- hier nur zur Dokumentation für einen sauberen Neuaufbau der DB.
