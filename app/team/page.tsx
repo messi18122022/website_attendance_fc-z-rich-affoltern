@@ -201,40 +201,51 @@ export default function TeamPage() {
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col items-end gap-1.5 shrink-0">
-                    {editBirthdateFor === player.id ? (
-                      <button
-                        onClick={() => setEditBirthdateFor(null)}
-                        className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        Abbrechen
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => {
+                        if (editBirthdateFor === player.id) {
+                          setEditBirthdateFor(null)
+                        } else {
                           setEditBirthdateFor(player.id)
                           setEditBirthdateValue(player.birthdate ?? '')
-                        }}
-                        className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        Geburtsdatum bearbeiten
-                      </button>
-                    )}
-                    {austrittFor === player.id ? (
-                      <button
-                        onClick={() => setAustrittFor(null)}
-                        className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        Abbrechen
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => { setAustrittFor(player.id); setAustrittDate(today) }}
-                        className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        Austritt erfassen
-                      </button>
-                    )}
+                        }
+                      }}
+                      className={cn(
+                        'h-9 w-9 rounded-xl flex items-center justify-center transition-colors',
+                        editBirthdateFor === player.id
+                          ? 'bg-primary/15 text-primary'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/70'
+                      )}
+                      title="Geburtsdatum bearbeiten"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (austrittFor === player.id) {
+                          setAustrittFor(null)
+                        } else {
+                          setAustrittFor(player.id)
+                          setAustrittDate(today)
+                        }
+                      }}
+                      className={cn(
+                        'h-9 w-9 rounded-xl flex items-center justify-center transition-colors',
+                        austrittFor === player.id
+                          ? 'bg-destructive/15 text-destructive'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/70'
+                      )}
+                      title="Austritt erfassen"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
 
