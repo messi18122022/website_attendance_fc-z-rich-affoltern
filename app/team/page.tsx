@@ -29,10 +29,15 @@ export default function TeamPage() {
   const [austrittFor, setAustrittFor] = useState<string | null>(null)
   const [austrittDate, setAustrittDate] = useState(today)
 
+  // Geburtsdatum-Bearbeiten inline state
+  const [editBirthdateFor, setEditBirthdateFor] = useState<string | null>(null)
+  const [editBirthdateValue, setEditBirthdateValue] = useState('')
+
   // Neuer Spieler form state
   const [showAdd, setShowAdd] = useState(false)
   const [newVorname, setNewVorname] = useState('')
   const [newJoinedAt, setNewJoinedAt] = useState(today)
+  const [newBirthdate, setNewBirthdate] = useState('')
 
   useEffect(() => {
     loadPlayers()
@@ -72,16 +77,30 @@ export default function TeamPage() {
   }
 
   async function handleAddPlayer() {
-    if (!newVorname.trim()) return
+    if (!newVorname.trim() || !newBirthdate) return
     setSaving(true)
     await supabase.from('players').insert({
       vorname: newVorname.trim(),
       joined_at: newJoinedAt,
+      birthdate: newBirthdate,
       active: true,
     })
     setNewVorname('')
     setNewJoinedAt(today)
+    setNewBirthdate('')
     setShowAdd(false)
+    await loadPlayers()
+    setSaving(false)
+  }
+
+  async function handleSaveBirthdate(playerId: string) {
+    if (!editBirthdateValue) return
+    setSaving(true)
+    await supabase
+      .from('players')
+      .update({ birthdate: editBirthdateValue })
+      .eq('id', playerId)
+    setEditBirthdateFor(null)
     await loadPlayers()
     setSaving(false)
   }
@@ -99,7 +118,7 @@ export default function TeamPage() {
           </p>
         </div>
         <button
-          onClick={() => { setShowAdd(true); setNewVorname(''); setNewJoinedAt(today) }}
+          onClick={() => { setShowAdd(true); setNewVorname(''); setNewJoinedAt(today); setNewBirthdate('') }}
           className="h-10 w-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/80 transition-colors"
           title="Spieler hinzufügen"
         >
@@ -127,10 +146,19 @@ export default function TeamPage() {
             <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Eintrittsdatum</label>
             <DatePicker value={newJoinedAt} onChange={setNewJoinedAt} />
           </div>
+          <div className="space-y-1">
+            <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Geburtsdatum</label>
+            <DatePicker
+              value={newBirthdate}
+              onChange={setNewBirthdate}
+              captionLayout="dropdown"
+              fromYear={new Date().getFullYear() - 25}
+            />
+          </div>
           <div className="flex gap-2">
             <Button
               onClick={handleAddPlayer}
-              disabled={saving || !newVorname.trim()}
+              disabled={saving || !newVorname.trim() || !newBirthdate}
               className="flex-1 rounded-xl h-10 text-sm font-semibold"
             >
               Hinzufügen
@@ -163,23 +191,86 @@ export default function TeamPage() {
                     <p className="text-xs text-muted-foreground">
                       Eintritt: {formatDate(player.joined_at)}
                     </p>
+                    {player.birthdate ? (
+                      <p className="text-xs text-muted-foreground">
+                        Geburtstag: {formatDate(player.birthdate)}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-amber-500 font-medium">
+                        ⚠ Kein Geburtsdatum
+                      </p>
+                    )}
                   </div>
-                  {austrittFor === player.id ? (
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <button
-                      onClick={() => setAustrittFor(null)}
-                      className="text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                      onClick={() => {
+                        if (editBirthdateFor === player.id) {
+                          setEditBirthdateFor(null)
+                        } else {
+                          setEditBirthdateFor(player.id)
+                          setEditBirthdateValue(player.birthdate ?? '')
+                        }
+                      }}
+                      className={cn(
+                        'h-9 w-9 rounded-xl flex items-center justify-center transition-colors',
+                        editBirthdateFor === player.id
+                          ? 'bg-primary/15 text-primary'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/70'
+                      )}
+                      title="Geburtsdatum bearbeiten"
                     >
-                      Abbrechen
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                      </svg>
                     </button>
-                  ) : (
                     <button
-                      onClick={() => { setAustrittFor(player.id); setAustrittDate(today) }}
-                      className="text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                      onClick={() => {
+                        if (austrittFor === player.id) {
+                          setAustrittFor(null)
+                        } else {
+                          setAustrittFor(player.id)
+                          setAustrittDate(today)
+                        }
+                      }}
+                      className={cn(
+                        'h-9 w-9 rounded-xl flex items-center justify-center transition-colors',
+                        austrittFor === player.id
+                          ? 'bg-destructive/15 text-destructive'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/70'
+                      )}
+                      title="Austritt erfassen"
                     >
-                      Austritt erfassen
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                      </svg>
                     </button>
-                  )}
+                  </div>
                 </div>
+
+                {editBirthdateFor === player.id && (
+                  <div className="border-t bg-muted/30 px-4 py-3 space-y-3">
+                    <div className="space-y-1">
+                      <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium">
+                        Geburtsdatum
+                      </label>
+                      <DatePicker
+                        value={editBirthdateValue}
+                        onChange={setEditBirthdateValue}
+                        captionLayout="dropdown"
+                        fromYear={new Date().getFullYear() - 25}
+                      />
+                    </div>
+                    <Button
+                      onClick={() => handleSaveBirthdate(player.id)}
+                      disabled={saving || !editBirthdateValue}
+                      className="w-full rounded-xl h-10 text-sm font-semibold"
+                    >
+                      Speichern
+                    </Button>
+                  </div>
+                )}
 
                 {austrittFor === player.id && (
                   <div className="border-t bg-muted/30 px-4 py-3 space-y-3">

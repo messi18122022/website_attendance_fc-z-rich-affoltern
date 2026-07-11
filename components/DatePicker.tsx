@@ -10,6 +10,8 @@ interface Props {
   value: string
   onChange: (value: string) => void
   className?: string
+  captionLayout?: 'label' | 'dropdown'
+  fromYear?: number
 }
 
 function formatDisplay(dateStr: string) {
@@ -34,7 +36,7 @@ function toIso(date: Date): string {
   return `${y}-${m}-${d}`
 }
 
-export default function DatePicker({ value, onChange, className }: Props) {
+export default function DatePicker({ value, onChange, className, captionLayout = 'label', fromYear }: Props) {
   const [open, setOpen] = useState(false)
   const [animating, setAnimating] = useState(false)
 
@@ -87,6 +89,9 @@ export default function DatePicker({ value, onChange, className }: Props) {
             }}
             locale={de}
             weekStartsOn={1}
+            captionLayout={captionLayout}
+            startMonth={fromYear ? new Date(fromYear, 0) : undefined}
+            endMonth={new Date()}
           />
         </div>
       </PopoverContent>
